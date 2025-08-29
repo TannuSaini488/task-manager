@@ -12,9 +12,9 @@ export default function Stats() {
       try {
         const token = localStorage.getItem("token");
         const res = await api.get(
-          "/stats/overview",
-          { withCredentials: true },
-          { headers: { Authorization: `Bearer ${token}` } }
+          "/stats/overview"
+          // { withCredentials: true },
+          // { headers: { Authorization: `Bearer ${token}` } }
         );
         setStats(res.data);
       } catch (err) {

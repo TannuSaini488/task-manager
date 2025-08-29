@@ -30,7 +30,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) });
+  res.cookie("jwt", "", { httpOnly: true, secure: true, sameSite: "none", expires: new Date(0) });
   res.json({ message: "Logged out" });
 });
 
