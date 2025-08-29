@@ -8,11 +8,30 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // const login = async (email, password) => {
+  //   setLoading(true);
+  //   try {
+  //     const { data } = await api.post("/auth/login", { email, password });
+  //     setUser(data);
+  //     return { ok: true };
+  //   } catch (e) {
+  //     return { ok: false, message: e.response?.data?.message || e.message };
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const login = async (email, password) => {
     setLoading(true);
     try {
       const { data } = await api.post("/auth/login", { email, password });
-      setUser(data);
+
+      // ✅ store token in localStorage
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      setUser(data.user || data); // store user info
       return { ok: true };
     } catch (e) {
       return { ok: false, message: e.response?.data?.message || e.message };
@@ -25,7 +44,12 @@ export default function AuthProvider({ children }) {
     setLoading(true);
     try {
       const { data } = await api.post("/auth/register", payload);
-      setUser(data);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+      setUser(data.user || data);
+
+      // setUser(data);
       return { ok: true };
     } catch (e) {
       return { ok: false, message: e.response?.data?.message || e.message };
@@ -42,7 +66,9 @@ export default function AuthProvider({ children }) {
   useEffect(() => {}, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, setUser }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, register, logout, setUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
